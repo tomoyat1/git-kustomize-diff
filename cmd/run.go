@@ -31,6 +31,7 @@ type runFlags struct {
 	target                  string
 	includeRegexpString     string
 	excludeRegexpString     string
+	kustomizeEnableHelm     bool
 	kustomizePath           string
 	kustomizeLoadRestrictor string
 	gitPath                 string
@@ -49,6 +50,7 @@ var runCmd = &cobra.Command{
 			Target:                  runOpts.target,
 			Debug:                   runOpts.debug,
 			AllowDirty:              runOpts.allowDirty,
+			KustomizeEnableHelm:     runOpts.kustomizeEnableHelm,
 			KustomizePath:           runOpts.kustomizePath,
 			KustomizeLoadRestrictor: runOpts.kustomizeLoadRestrictor,
 			GitPath:                 runOpts.gitPath,
@@ -91,6 +93,7 @@ func init() {
 	runCmd.PersistentFlags().StringVar(&runOpts.target, "target", "", "target commitish (default to the current branch)")
 	runCmd.PersistentFlags().StringVar(&runOpts.includeRegexpString, "include", "", "include regexp (default to all)")
 	runCmd.PersistentFlags().StringVar(&runOpts.excludeRegexpString, "exclude", "", "exclude regexp (default to none)")
+	runCmd.PersistentFlags().BoolVar(&runOpts.kustomizeEnableHelm, "kustomize-enable-helm", false, "enable helm support in kustomize (requires Helm 3 executable)")
 	runCmd.PersistentFlags().StringVar(&runOpts.kustomizePath, "kustomize-path", "", "path of a kustomize binary (default to embedded)")
 	runCmd.PersistentFlags().StringVar(&runOpts.kustomizeLoadRestrictor, "kustomize-load-restrictor", "", "kustomize load restrictor type (default to kustomizaton provider defaults)")
 	runCmd.PersistentFlags().StringVar(&runOpts.gitPath, "git-path", "", "path of a git binary (default to git)")

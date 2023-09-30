@@ -31,6 +31,7 @@ import (
 type DiffOpts struct {
 	IncludeRegexp           *regexp.Regexp
 	ExcludeRegexp           *regexp.Regexp
+	KustomizeEnableHelm     bool
 	KustomizePath           string
 	KustomizeLoadRestrictor string
 }
@@ -73,12 +74,12 @@ func Diff(baseDirPath, targetDirPath string, opts DiffOpts) (*DiffMap, error) {
 				continue
 			}
 		}
-		baseYaml, err := Build(baseKDirPath, BuildOpts{opts.KustomizePath, opts.KustomizeLoadRestrictor})
+		baseYaml, err := Build(baseKDirPath, BuildOpts{opts.KustomizeEnableHelm, opts.KustomizePath, opts.KustomizeLoadRestrictor})
 		if err != nil {
 			diffMap.Results[kDir] = &DiffError{err}
 			continue
 		}
-		targetYaml, err := Build(targetKDirPath, BuildOpts{opts.KustomizePath, opts.KustomizeLoadRestrictor})
+		targetYaml, err := Build(targetKDirPath, BuildOpts{opts.KustomizeEnableHelm, opts.KustomizePath, opts.KustomizeLoadRestrictor})
 		if err != nil {
 			diffMap.Results[kDir] = &DiffError{err}
 			continue
@@ -123,16 +124,20 @@ func MakeBuildOptions(kustomizeLoadRestrictor string) (*krusty.Options, error) {
 }
 
 type BuildOpts struct {
+	KustomizeEnableHelm     bool
 	KustomizePath           string
 	KustomizeLoadRestrictor string
 }
 
 func Build(dirPath string, opts BuildOpts) (string, error) {
 	if opts.KustomizePath != "" {
-		buildArgs := []string {"build"}
-		if (opts.KustomizeLoadRestrictor != "") {
+		buildArgs := []string{"build"}
+		if opts.KustomizeLoadRestrictor != "" {
 			buildArgs = append(buildArgs, "--load-restrictor")
 			buildArgs = append(buildArgs, opts.KustomizeLoadRestrictor)
+		}
+		if opts.KustomizeEnableHelm {
+			buildArgs = append(buildArgs, "--enable-helm")
 		}
 		buildArgs = append(buildArgs, dirPath)
 		stdout, _, err := (&utils.WorkDir{}).RunCommand(opts.KustomizePath, buildArgs...)

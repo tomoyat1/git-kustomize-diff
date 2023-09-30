@@ -102,7 +102,7 @@ spec:
 	_, err := Build(fixturesDirPath, BuildOpts{})
 	assert.NotEqual(t, err, nil)
 
-	buildOpts := BuildOpts{"", "LoadRestrictionsNone"}
+	buildOpts := BuildOpts{false, "", "LoadRestrictionsNone"}
 	actualYaml, err := Build(fixturesDirPath, buildOpts)
 	if !assert.NoError(t, err) {
 		t.FailNow()
@@ -156,7 +156,7 @@ func TestDiffLoadRestrictionsNone(t *testing.T) {
 		t.FailNow()
 	}
 
-	diffOpts := DiffOpts{nil, nil, "", "LoadRestrictionsNone"}
+	diffOpts := DiffOpts{nil, nil, false, "", "LoadRestrictionsNone"}
 	diffMap, err := Diff(baseDirPath, targetDirPath, diffOpts)
 	if !assert.NoError(t, err) {
 		t.FailNow()

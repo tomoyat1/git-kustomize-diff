@@ -31,6 +31,7 @@ type RunOpts struct {
 	Target                  string
 	IncludeRegexp           *regexp.Regexp
 	ExcludeRegexp           *regexp.Regexp
+	KustomizeEnableHelm     bool
 	KustomizePath           string
 	KustomizeLoadRestrictor string
 	GitPath                 string
@@ -122,6 +123,7 @@ func Run(dirPath string, opts RunOpts) (*RunResult, error) {
 	diffMap, err := Diff(baseGitDir.WorkDir.Dir, targetGitDir.WorkDir.Dir, DiffOpts{
 		IncludeRegexp:           opts.IncludeRegexp,
 		ExcludeRegexp:           opts.ExcludeRegexp,
+		KustomizeEnableHelm:     opts.KustomizeEnableHelm,
 		KustomizePath:           opts.KustomizePath,
 		KustomizeLoadRestrictor: opts.KustomizeLoadRestrictor,
 	})
